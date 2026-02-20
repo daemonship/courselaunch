@@ -9,3 +9,4 @@ _site/
 npm-debug.log*
 .env
 .env.*
+debug.mjs

@@ -547,16 +547,33 @@ body {
 }
 
 /* Shiki Syntax Highlighting */
-.shiki {
-  background: var(--color-code-bg) !important;
-  padding: var(--spacing-md) !important;
-  border-radius: 8px !important;
-  overflow-x: auto !important;
+.shiki-container {
+  position: relative;
+  margin: var(--spacing-lg) 0;
 }
 
-.shiki code {
-  background: none !important;
-  padding: 0 !important;
+.shiki-container .shiki {
+  margin: 0;
+  padding: var(--spacing-md);
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.shiki-container .shiki-light {
+  display: block;
+}
+
+.shiki-container .shiki-dark {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .shiki-container .shiki-light {
+    display: none;
+  }
+  .shiki-container .shiki-dark {
+    display: block;
+  }
 }
 
 /* Footer */
