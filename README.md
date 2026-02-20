@@ -18,7 +18,7 @@ Independent educators, bootcamp instructors, and workshop creators use CourseLau
 |---------|--------|-------|
 | Project scaffold & CI | ✅ Complete | TypeScript, vitest, ESLint, GitHub Actions |
 | Init command & content model | ✅ Complete | course.yaml parser, content walker, init command |
-| HTML templates & CSS theme | 📋 Planned | |
+| HTML templates & CSS theme | ✅ Complete | Landing page, module pages, lesson pages with sidebar & nav |
 | Build command (markdown + syntax highlighting) | 📋 Planned | |
 | Dev server with live reload | 📋 Planned | |
 | npm publish | 📋 Planned | |
