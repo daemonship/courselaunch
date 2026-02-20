@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Build &amp; Publish Courses with CourseLaunch</title>
+  <style>/* CourseLaunch Theme — Clean, readable, responsive */
+
+/* CSS Variables */
+:root {
+  --color-bg: #ffffff;
+  --color-bg-sidebar: #f8f9fa;
+  --color-text: #1a1a1a;
+  --color-text-muted: #6c757d;
+  --color-primary: #0066cc;
+  --color-primary-hover: #0052a3;
+  --color-border: #dee2e6;
+  --color-code-bg: #f6f8fa;
+  --color-draft: #ffc107;
+  --color-draft-text: #856404;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+
+  --sidebar-width: 280px;
+  --header-height: 60px;
+}
+
+/* Dark mode support (optional, for future) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #1a1a1a;
+    --color-bg-sidebar: #242424;
+    --color-text: #e9ecef;
+    --color-text-muted: #adb5bd;
+    --color-primary: #4d9fff;
+    --color-primary-hover: #80bdff;
+    --color-border: #495057;
+    --color-code-bg: #2d2d2d;
+  }
+}
+
+/* Reset & Base */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Layout */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Header */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--spacing-md);
+}
+
+.site-header-inner {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.site-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.site-author {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  width: var(--sidebar-width);
+  height: calc(100vh - var(--header-height));
+  background: var(--color-bg-sidebar);
+  border-right: 1px solid var(--color-border);
+  overflow-y: auto;
+  padding: var(--spacing-md);
+  -webkit-overflow-scrolling: touch;
+}
+
+.sidebar-toggle {
+  display: none;
+  position: fixed;
+  bottom: var(--spacing-md);
+  right: var(--spacing-md);
+  width: 48px;
+  height: 48px;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 200;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  font-size: 1.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-nav {
+  list-style: none;
+}
+
+.sidebar-module {
+  margin-top: var(--spacing-lg);
+}
+
+.sidebar-module:first-child {
+  margin-top: 0;
+}
+
+.sidebar-module-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-sm);
+}
+
+.sidebar-module-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.sidebar-module-title a:hover {
+  color: var(--color-primary);
+}
+
+.sidebar-lesson {
+  margin-bottom: var(--spacing-xs);
+}
+
+.sidebar-lesson a {
+  display: block;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  color: var(--color-text);
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  transition: background-color 0.15s ease;
+}
+
+.sidebar-lesson a:hover {
+  background: rgba(0, 102, 204, 0.1);
+}
+
+.sidebar-lesson.active a {
+  background: var(--color-primary);
+  color: white;
+  font-weight: 500;
+}
+
+.sidebar-lesson.draft a {
+  color: var(--color-draft-text);
+}
+
+.sidebar-lesson.draft a::after {
+  content: 'Draft';
+  display: inline-block;
+  font-size: 0.6875rem;
+  padding: 2px 6px;
+  margin-left: var(--spacing-sm);
+  background: var(--color-draft);
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+.sidebar-lesson.draft.active a::after {
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+/* Main Content */
+.main-content {
+  margin-left: var(--sidebar-width);
+  margin-top: var(--header-height);
+  min-height: calc(100vh - var(--header-height));
+  width: 100%;
+}
+
+.content-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-md);
+}
+
+/* Landing Page */
+.landing-hero {
+  padding: var(--spacing-xl) 0;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: var(--spacing-xl);
+}
+
+.landing-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: var(--spacing-md);
+}
+
+.landing-author {
+  font-size: 1.125rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-md);
+}
+
+.landing-description {
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+  max-width: 65ch;
+}
+
+.module-list {
+  list-style: none;
+}
+
+.module-list-item {
+  padding: var(--spacing-lg) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.module-list-item:last-child {
+  border-bottom: none;
+}
+
+.module-list-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
+}
+
+.module-list-title a {
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.module-list-title a:hover {
+  color: var(--color-primary);
+}
+
+.module-list-description {
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-md);
+}
+
+.lesson-list {
+  list-style: none;
+  display: grid;
+  gap: var(--spacing-sm);
+}
+
+.lesson-list-item {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-sm);
+}
+
+.lesson-list-link {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.lesson-list-link:hover {
+  text-decoration: underline;
+}
+
+.lesson-list-draft {
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  background: var(--color-draft);
+  color: var(--color-draft-text);
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+/* Lesson Page */
+.lesson-header {
+  margin-bottom: var(--spacing-xl);
+}
+
+.lesson-title {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: var(--spacing-sm);
+}
+
+.lesson-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+}
+
+.lesson-duration {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.lesson-draft-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  background: var(--color-draft);
+  color: var(--color-draft-text);
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Navigation */
+.lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-xl);
+  border-top: 1px solid var(--color-border);
+}
+
+.lesson-nav-link {
+  flex: 1;
+  padding: var(--spacing-md);
+  background: var(--color-bg-sidebar);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--color-text);
+  transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  max-width: 50%;
+}
+
+.lesson-nav-link:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.15);
+}
+
+.lesson-nav-link[disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.lesson-nav-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.lesson-nav-title {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.lesson-nav-prev {
+  text-align: left;
+}
+
+.lesson-nav-next {
+  text-align: right;
+  margin-left: auto;
+}
+
+/* Markdown Content */
+.markdown-content {
+  font-size: 1.0625rem;
+  line-height: 1.7;
+}
+
+.markdown-content > * + * {
+  margin-top: var(--spacing-lg);
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  font-weight: 600;
+  line-height: 1.3;
+  margin-top: var(--spacing-xl);
+  margin-bottom: var(--spacing-md);
+}
+
+.markdown-content h1 {
+  font-size: 1.75rem;
+}
+
+.markdown-content h2 {
+  font-size: 1.5rem;
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.markdown-content h3 {
+  font-size: 1.25rem;
+}
+
+.markdown-content h4 {
+  font-size: 1.125rem;
+}
+
+.markdown-content p {
+  max-width: 70ch;
+}
+
+.markdown-content a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.markdown-content a:hover {
+  text-decoration: underline;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  padding-left: var(--spacing-lg);
+  max-width: 65ch;
+}
+
+.markdown-content li {
+  margin-bottom: var(--spacing-xs);
+}
+
+.markdown-content li > ul,
+.markdown-content li > ol {
+  margin-top: var(--spacing-xs);
+}
+
+.markdown-content blockquote {
+  margin: var(--spacing-lg) 0;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-left: 4px solid var(--color-primary);
+  background: var(--color-bg-sidebar);
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.markdown-content blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-content code {
+  font-family: var(--font-mono);
+  font-size: 0.9375em;
+  background: var(--color-code-bg);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+}
+
+.markdown-content pre {
+  margin: var(--spacing-lg) 0;
+  padding: var(--spacing-md);
+  background: var(--color-code-bg);
+  border-radius: 8px;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+
+.markdown-content pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.875rem;
+}
+
+.markdown-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: var(--spacing-lg) 0;
+}
+
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--spacing-lg) 0;
+  font-size: 0.9375rem;
+}
+
+.markdown-content th,
+.markdown-content td {
+  padding: var(--spacing-sm) var(--spacing-md);
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.markdown-content th {
+  font-weight: 600;
+  background: var(--color-bg-sidebar);
+}
+
+.markdown-content hr {
+  border: none;
+  border-top: 2px solid var(--color-border);
+  margin: var(--spacing-xl) 0;
+}
+
+/* Shiki Syntax Highlighting */
+.shiki-container {
+  position: relative;
+  margin: var(--spacing-lg) 0;
+}
+
+.shiki-container .shiki {
+  margin: 0;
+  padding: var(--spacing-md);
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.shiki-container .shiki-light {
+  display: block;
+}
+
+.shiki-container .shiki-dark {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .shiki-container .shiki-light {
+    display: none;
+  }
+  .shiki-container .shiki-dark {
+    display: block;
+  }
+}
+
+/* Footer */
+.site-footer {
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width: 0px;
+  }
+
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 150;
+    width: 280px;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-toggle {
+    display: flex;
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+
+  .content-wrapper {
+    padding: var(--spacing-md);
+  }
+
+  .landing-title {
+    font-size: 2rem;
+  }
+
+  .lesson-title {
+    font-size: 1.5rem;
+  }
+
+  .lesson-nav {
+    flex-direction: column;
+  }
+
+  .lesson-nav-link {
+    max-width: 100%;
+  }
+
+  .markdown-content pre {
+    padding: var(--spacing-sm);
+    border-radius: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-title {
+    font-size: 1.75rem;
+  }
+
+  .site-header-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+}
+
+/* Print Styles */
+@media print {
+  .sidebar,
+  .sidebar-toggle,
+  .site-header,
+  .lesson-nav,
+  .site-footer {
+    display: none;
+  }
+
+  .main-content {
+    margin: 0;
+  }
+
+  .content-wrapper {
+    padding: 0;
+    max-width: none;
+  }
+
+  .markdown-content a {
+    color: var(--color-text);
+  }
+}
+</style>
+</head>
+<body>
+  <div class="app-container">
+    
+    <header class="site-header">
+      <div class="site-header-inner">
+        <a href="./" class="site-title">Build &amp; Publish Courses with CourseLaunch</a>
+        <span class="site-author">by DaemonShip</span>
+      </div>
+    </header>
+  
+    
+    <aside class="sidebar" id="sidebar">
+      <nav>
+        <ul class="sidebar-nav">
+          
+        <li class="sidebar-module">
+          <h3 class="sidebar-module-title">
+            <a href="./01-getting-started/">01 Getting Started</a>
+          </h3>
+        </li>
+      
+
+        <li class="sidebar-lesson">
+          <a href="./01-getting-started/01-what-is-courselaunch.html">What is CourseLaunch?</a>
+        </li>
+      
+
+        <li class="sidebar-lesson active">
+          <a href="./01-getting-started/02-installation.html">Installation &amp; First Run</a>
+        </li>
+      
+
+        <li class="sidebar-lesson">
+          <a href="./01-getting-started/03-dev-server.html">Live Preview with the Dev Server</a>
+        </li>
+      
+
+        <li class="sidebar-module">
+          <h3 class="sidebar-module-title">
+            <a href="./02-writing-content/">02 Writing Content</a>
+          </h3>
+        </li>
+      
+
+        <li class="sidebar-lesson">
+          <a href="./02-writing-content/01-course-structure.html">Course Structure &amp; Frontmatter</a>
+        </li>
+      
+
+        <li class="sidebar-lesson">
+          <a href="./02-writing-content/02-markdown-tips.html">Writing Great Lesson Content</a>
+        </li>
+      
+
+        <li class="sidebar-lesson">
+          <a href="./02-writing-content/03-publishing.html">Publishing Your Course</a>
+        </li>
+      
+        </ul>
+      </nav>
+    </aside>
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+  
+    <main class="main-content">
+      <div class="content-wrapper">
+        
+    <article>
+      <div class="lesson-header">
+        <h1 class="lesson-title">Installation &amp; First Run</h1>
+        <div class="lesson-meta">
+      <span class="lesson-duration">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        5 min
+      </span>
+    </div>
+      </div>
+      <div class="markdown-content">
+        <h1>Installation &amp; First Run</h1>
+<p>CourseLaunch requires Node.js 18 or newer. If you don’t have it, install it from <a href="https://nodejs.org">nodejs.org</a>.</p>
+<h2>Install</h2>
+<p>You can use CourseLaunch without installing it permanently:</p>
+<pre><code class="language-bash"><div class="shiki-container"><pre class="shiki github-light" style="background-color:#fff;color:#24292e" tabindex="0"><code><span class="line"><span style="color:#6F42C1">npx</span><span style="color:#032F62"> courselaunch</span></span>
+<span class="line"></span></code></pre><pre class="shiki github-dark" style="background-color:#24292e;color:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#B392F0">npx</span><span style="color:#9ECBFF"> courselaunch</span></span>
+<span class="line"></span></code></pre></div></code></pre>
+<p>Or install it globally so <code>courselaunch</code> is always available:</p>
+<pre><code class="language-bash"><div class="shiki-container"><pre class="shiki github-light" style="background-color:#fff;color:#24292e" tabindex="0"><code><span class="line"><span style="color:#6F42C1">npm</span><span style="color:#032F62"> install</span><span style="color:#005CC5"> -g</span><span style="color:#032F62"> courselaunch</span></span>
+<span class="line"></span></code></pre><pre class="shiki github-dark" style="background-color:#24292e;color:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#B392F0">npm</span><span style="color:#9ECBFF"> install</span><span style="color:#79B8FF"> -g</span><span style="color:#9ECBFF"> courselaunch</span></span>
+<span class="line"></span></code></pre></div></code></pre>
+<h2>Create Your First Course</h2>
+<p>Navigate to an empty directory and run:</p>
+<pre><code class="language-bash"><div class="shiki-container"><pre class="shiki github-light" style="background-color:#fff;color:#24292e" tabindex="0"><code><span class="line"><span style="color:#6F42C1">mkdir</span><span style="color:#032F62"> my-course</span><span style="color:#24292E"> &#x26;&#x26; </span><span style="color:#005CC5">cd</span><span style="color:#032F62"> my-course</span></span>
+<span class="line"><span style="color:#6F42C1">courselaunch</span><span style="color:#032F62"> init</span></span>
+<span class="line"></span></code></pre><pre class="shiki github-dark" style="background-color:#24292e;color:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#B392F0">mkdir</span><span style="color:#9ECBFF"> my-course</span><span style="color:#E1E4E8"> &#x26;&#x26; </span><span style="color:#79B8FF">cd</span><span style="color:#9ECBFF"> my-course</span></span>
+<span class="line"><span style="color:#B392F0">courselaunch</span><span style="color:#9ECBFF"> init</span></span>
+<span class="line"></span></code></pre></div></code></pre>
+<p>You’ll be prompted for a title, author, and optional description:</p>
+<pre><code>Creating a new course...
+
+Course title: Introduction to Rust
+Author name: Jane Smith
+Course description (optional): A beginner-friendly intro to systems programming
+</code></pre>
+<p>This creates the following structure:</p>
+<pre><code>my-course/
+├── course.yaml            # Course metadata
+├── modules/
+│   └── 01-introduction/
+│       ├── 01-hello-world.md
+│       └── 02-core-concepts.md
+└── static/                # Static assets (images, etc.)
+</code></pre>
+<h2>Skip the Prompts</h2>
+<p>If you want to use defaults and start writing immediately:</p>
+<pre><code class="language-bash"><div class="shiki-container"><pre class="shiki github-light" style="background-color:#fff;color:#24292e" tabindex="0"><code><span class="line"><span style="color:#6F42C1">courselaunch</span><span style="color:#032F62"> init</span><span style="color:#005CC5"> -y</span></span>
+<span class="line"></span></code></pre><pre class="shiki github-dark" style="background-color:#24292e;color:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#B392F0">courselaunch</span><span style="color:#9ECBFF"> init</span><span style="color:#79B8FF"> -y</span></span>
+<span class="line"></span></code></pre></div></code></pre>
+<h2>Build It</h2>
+<pre><code class="language-bash"><div class="shiki-container"><pre class="shiki github-light" style="background-color:#fff;color:#24292e" tabindex="0"><code><span class="line"><span style="color:#6F42C1">courselaunch</span><span style="color:#032F62"> build</span></span>
+<span class="line"></span></code></pre><pre class="shiki github-dark" style="background-color:#24292e;color:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#B392F0">courselaunch</span><span style="color:#9ECBFF"> build</span></span>
+<span class="line"></span></code></pre></div></code></pre>
+<p>This generates a <code>_site/</code> directory with your full static site. Open <code>_site/index.html</code> in a browser to preview it.</p>
+<h2>Next Steps</h2>
+<p>In the next lesson, we’ll look at how to structure your content with modules and lessons.</p>
+
+      </div>
+      
+    <nav class="lesson-nav" aria-label="Lesson navigation">
+      
+      <a href="./01-getting-started/01-what-is-courselaunch.html" class="lesson-nav-link lesson-nav-prev">
+        <span class="lesson-nav-label">← Previous</span>
+        <span class="lesson-nav-title">What is CourseLaunch?</span>
+      </a>
+    
+      
+      <a href="./01-getting-started/03-dev-server.html" class="lesson-nav-link lesson-nav-next">
+        <span class="lesson-nav-label">Next →</span>
+        <span class="lesson-nav-title">Live Preview with the Dev Server</span>
+      </a>
+    
+    </nav>
+  
+    </article>
+  
+        
+    <footer class="site-footer">
+      <p>© 2026 DaemonShip. Built with <a href="https://github.com/daemonship/courselaunch" target="_blank" rel="noopener">CourseLaunch</a>.</p>
+    </footer>
+  
+      </div>
+    </main>
+  </div>
+  <script>
+    // Sidebar toggle for mobile
+    (function() {
+      const toggle = document.getElementById('sidebarToggle');
+      const sidebar = document.getElementById('sidebar');
+      if (!toggle || !sidebar) return;
+
+      toggle.addEventListener('click', function() {
+        sidebar.classList.toggle('open');
+      });
+
+      // Close sidebar when clicking outside on mobile
+      document.addEventListener('click', function(e) {
+        if (window.innerWidth <= 768) {
+          if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+            sidebar.classList.remove('open');
+          }
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
