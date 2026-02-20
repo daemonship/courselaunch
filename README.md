@@ -1,19 +1,70 @@
-# CourseLaunch CLI: One-Click Static Site Generator for Course Materials
+# CourseLaunch CLI
 
-> Teachers creating independent courses struggle to turn notes, slides, and videos into a polished, navigable website without web dev skills. Platforms like Teachable are overkill and lock-in content.
+> One-click static site generator for course materials. Turn markdown notes into a polished, navigable course website — no web dev skills required.
 
-## What It Solves
+Independent educators, bootcamp instructors, and workshop creators use CourseLaunch to publish courses directly without platform lock-in.
 
-Teachers creating independent courses struggle to turn notes, slides, and videos into a polished, navigable website without web dev skills. Platforms like Teachable are overkill and lock-in content.
+## Feedback & Ideas
 
-## Who It's For
+> **This project is being built in public and we want to hear from you.**
+> Found a bug? Have a feature idea? Something feel wrong or missing?
+> **[Open an issue](../../issues)** — every piece of feedback directly shapes what gets built next.
 
-Independent educators, bootcamp instructors, and workshop creators selling or sharing courses directly.
+## Status
+
+> 🚧 In active development — not yet production ready
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Project scaffold & CI | ✅ Complete | TypeScript, vitest, ESLint, GitHub Actions |
+| Init command & content model | 🚧 In Progress | |
+| HTML templates & CSS theme | 📋 Planned | |
+| Build command (markdown + syntax highlighting) | 📋 Planned | |
+| Dev server with live reload | 📋 Planned | |
+| npm publish | 📋 Planned | |
+
+## What it does
+
+`courselaunch` reads a directory of markdown lesson files, parses frontmatter metadata, and generates a fully static, navigable course website with a sidebar, prev/next navigation, and syntax-highlighted code blocks.
+
+## Install
+
+```bash
+npm install -g courselaunch
+# or run without installing:
+npx courselaunch
+```
+
+## Usage
+
+```bash
+# Create a new course project in the current directory
+courselaunch init
+
+# Build the static site into _site/
+courselaunch build
+
+# Start a local dev server with live reload
+courselaunch serve
+```
 
 ## Tech Stack
-- Initialize repo with TypeScript CLI skeleton
-- Init command, config parser, and content model
-- HTML templates and CSS theme for generated site
+
+- **TypeScript** — Node 18+
+- **commander** — CLI argument parsing
+- **markdown-it** — Markdown rendering
+- **shiki** — Syntax highlighting
+- **express + chokidar + ws** — Dev server with live reload
+
+## Development
+
+```bash
+npm install
+npm run build       # compile TypeScript → dist/
+npm test            # run vitest tests
+npm run lint        # ESLint
+npm run typecheck   # tsc --noEmit
+```
 
 ---
 
