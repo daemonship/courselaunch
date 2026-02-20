@@ -38,7 +38,7 @@ function getModuleSlug(dirname: string): string {
 /**
  * Read a lesson file and parse its frontmatter
  */
-function readLessonFile(lessonPath: string, moduleSlug: string): Lesson {
+function readLessonFile(lessonPath: string, _moduleSlug: string): Lesson {
   const filename = path.basename(lessonPath);
   const slug = getLessonSlug(filename);
   
