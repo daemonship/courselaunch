@@ -12,6 +12,7 @@
   ],
   "scripts": {
     "build": "tsc",
+    "postbuild": "mkdir -p dist/templates && cp src/templates/styles.css dist/templates/",
     "dev": "tsc --watch",
     "start": "node dist/index.js",
     "test": "vitest run",
@@ -24,12 +25,22 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
+    "@types/express": "^5.0.6",
+    "@types/ws": "^8.18.1",
+    "chokidar": "^5.0.0",
     "commander": "^12.1.0",
+    "express": "^5.2.1",
+    "fs-extra": "^11.3.3",
     "gray-matter": "^4.0.3",
+    "markdown-it": "^14.1.1",
+    "shiki": "^3.22.0",
+    "ws": "^8.19.0",
     "yaml": "^2.7.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
+    "@types/fs-extra": "^11.0.4",
+    "@types/markdown-it": "^14.1.2",
     "@types/node": "^20.17.10",
     "@types/yaml": "^1.9.7",
     "@typescript-eslint/eslint-plugin": "^8.19.1",
