@@ -19,9 +19,15 @@ Independent educators, bootcamp instructors, and workshop creators use CourseLau
 | Project scaffold & CI | ✅ Complete | TypeScript, vitest, ESLint, GitHub Actions |
 | Init command & content model | ✅ Complete | course.yaml parser, content walker, init command |
 | HTML templates & CSS theme | ✅ Complete | Landing page, module pages, lesson pages with sidebar & nav |
-| Build command (markdown + syntax highlighting) | ✅ Complete | Markdown rendering with shiki syntax highlighting, static asset copying, configurable output directory |
+| Build command (markdown + syntax highlighting) | ✅ Complete | Markdown rendering with shiki, light/dark mode |
 | Dev server with live reload | ✅ Complete | Express + chokidar + ws with live reload |
-| npm publish | 📋 Planned | |
+| npm publish & GitHub Pages demo | ✅ Complete | Publish workflow ready; demo at [daemonship.github.io/courselaunch](https://daemonship.github.io/courselaunch/) |
+
+## Live Demo
+
+A working example course is deployed at **https://daemonship.github.io/courselaunch/**
+
+It was built from the [`example/`](./example) directory in this repo using `courselaunch build`.
 
 ## What it does
 
@@ -49,12 +55,56 @@ courselaunch build -o dist
 courselaunch serve
 ```
 
+## Course Structure
+
+```
+my-course/
+├── course.yaml            # title, author, description
+├── modules/
+│   ├── 01-introduction/   # module folders (sorted alphabetically)
+│   │   ├── 01-welcome.md  # lesson files (sorted alphabetically)
+│   │   └── 02-setup.md
+│   └── 02-deep-dive/
+│       └── 01-concepts.md
+└── static/                # images, PDFs, etc.
+```
+
+### Lesson Frontmatter
+
+```markdown
+---
+title: Your Lesson Title
+description: Short summary shown in module listings
+duration: 10 min
+draft: false
+---
+
+# Your Lesson Title
+
+Lesson content here...
+```
+
+## Publish to npm
+
+The publish workflow is set up at `.github/workflows/publish.yml`. To enable automated npm publishing:
+
+1. Generate an npm automation token at [npmjs.com/settings](https://www.npmjs.com/settings)
+2. Add it as `NPM_TOKEN` in your GitHub repo's Settings → Secrets → Actions
+3. Create a GitHub release to trigger the publish, or trigger the workflow manually
+
+## Deploy to GitHub Pages
+
+The `pages.yml` workflow auto-deploys the `example/` course to GitHub Pages on every push to `main`. To use it in your own course repo:
+
+1. Set up GitHub Pages in your repo settings (source: `gh-pages` branch)
+2. Copy `.github/workflows/pages.yml` and adjust the `working-directory` path
+
 ## Tech Stack
 
 - **TypeScript** — Node 18+
 - **commander** — CLI argument parsing
 - **markdown-it** — Markdown rendering
-- **shiki** — Syntax highlighting
+- **shiki** — Syntax highlighting (light/dark mode)
 - **express + chokidar + ws** — Dev server with live reload
 
 ## Development
