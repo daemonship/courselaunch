@@ -1,0 +1,11 @@
+node_modules/
+dist/
+_site/
+*.js.map
+*.d.ts
+*.d.ts.map
+.DS_Store
+*.log
+npm-debug.log*
+.env
+.env.*
