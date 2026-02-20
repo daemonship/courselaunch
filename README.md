@@ -19,8 +19,8 @@ Independent educators, bootcamp instructors, and workshop creators use CourseLau
 | Project scaffold & CI | ✅ Complete | TypeScript, vitest, ESLint, GitHub Actions |
 | Init command & content model | ✅ Complete | course.yaml parser, content walker, init command |
 | HTML templates & CSS theme | ✅ Complete | Landing page, module pages, lesson pages with sidebar & nav |
-| Build command (markdown + syntax highlighting) | 📋 Planned | |
-| Dev server with live reload | 📋 Planned | |
+| Build command (markdown + syntax highlighting) | ✅ Complete | Markdown rendering with shiki syntax highlighting, static asset copying, configurable output directory |
+| Dev server with live reload | ✅ Complete | Express + chokidar + ws with live reload |
 | npm publish | 📋 Planned | |
 
 ## What it does
@@ -41,8 +41,9 @@ npx courselaunch
 # Create a new course project in the current directory
 courselaunch init
 
-# Build the static site into _site/
+# Build the static site into _site/ (or custom directory with -o)
 courselaunch build
+courselaunch build -o dist
 
 # Start a local dev server with live reload
 courselaunch serve
